@@ -1,0 +1,60 @@
+name: energy-grid-env
+version: "1.0.0"
+description: >
+  AI-powered smart grid simulation environment for reinforcement learning.
+  Manages renewable energy, battery storage, and backup generators to
+  maintain grid stability and maximize renewable usage.
+
+author: VoltWise
+license: MIT
+
+observation_space:
+  demand:            { type: float, unit: MW,      range: [0, 500] }
+  solar_generation:  { type: float, unit: MW,      range: [0, 200] }
+  wind_generation:   { type: float, unit: MW,      range: [0, 150] }
+  battery_storage:   { type: float, unit: percent, range: [0, 100] }
+  grid_capacity:     { type: float, unit: MW,      range: [0, 500] }
+  transmission_load: { type: float, unit: percent, range: [0, 100] }
+  time_of_day:       { type: int,   unit: hour,    range: [0, 23]  }
+  region_demands:    { type: list,  length: 3,     unit: MW        }
+
+action_space:
+  - id: 0
+    name: redirect_power
+    description: Redirect electricity between regions
+  - id: 1
+    name: charge_battery
+    description: Store excess energy in batteries
+  - id: 2
+    name: discharge_battery
+    description: Release stored energy from batteries
+  - id: 3
+    name: activate_generator
+    description: Activate fossil fuel backup generator
+  - id: 4
+    name: curtail_renewable
+    description: Curtail excess renewable generation
+  - id: 5
+    name: redistribute_regional_power
+    description: Redistribute power across all regions
+
+reward:
+  demand_satisfied:    +10
+  renewable_used:      +5
+  blackout_penalty:    -10
+  generator_penalty:   -3
+  waste_penalty:       -2
+
+tasks:
+  - name: easy
+    file: tasks/easy.py
+    description: Single city grid with solar and limited battery storage
+  - name: medium
+    file: tasks/medium.py
+    description: Multi-region grid with energy transfer between cities
+  - name: hard
+    file: tasks/hard.py
+    description: Renewable fluctuation scenario with weather events
+
+entry_point: env.py
+api_entry: api/backend_api.py
