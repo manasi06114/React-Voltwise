@@ -76,7 +76,7 @@ def run(task: str, episodes: int, verbose: bool = False):
         metrics_history.append(metrics)
 
         print(
-            f"✓ Episode {ep} complete | "
+            f"[OK] Episode {ep} complete | "
             f"reward={metrics['total_reward']:.2f} | "
             f"steps={metrics['steps']} | "
             f"blackouts={metrics['blackouts']} | "

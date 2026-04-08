@@ -1,12 +1,13 @@
 name: energy-grid-env
-version: "1.0.0"
+version: "2.0.0"
 description: >
   AI-powered smart grid simulation environment for reinforcement learning.
-  Manages renewable energy, battery storage, and backup generators to
-  maintain grid stability and maximize renewable usage.
+  Built on OpenEnv (Meta/HuggingFace) framework. Manages renewable energy,
+  battery storage, and backup generators to maintain grid stability.
 
 author: VoltWise
 license: MIT
+framework: openenv-core
 
 observation_space:
   demand:            { type: float, unit: MW,      range: [0, 500] }
@@ -17,6 +18,9 @@ observation_space:
   transmission_load: { type: float, unit: percent, range: [0, 100] }
   time_of_day:       { type: int,   unit: hour,    range: [0, 23]  }
   region_demands:    { type: list,  length: 3,     unit: MW        }
+  blackout:          { type: bool }
+  fossil_fuel_used:  { type: float, unit: MW }
+  energy_wasted:     { type: float, unit: MW }
 
 action_space:
   - id: 0
@@ -56,5 +60,6 @@ tasks:
     file: tasks/hard.py
     description: Renewable fluctuation scenario with weather events
 
-entry_point: env.py
-api_entry: api/backend_api.py
+entry_point: server/app.py
+models: models.py
+client: client.py

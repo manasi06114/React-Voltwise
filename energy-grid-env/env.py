@@ -60,16 +60,16 @@ class EnergyGridEnv:
 
         info = {
             "reward_breakdown": {
-                "demand_reward": breakdown.demand_reward,
-                "renewable_reward": breakdown.renewable_reward,
-                "blackout_penalty": breakdown.blackout_penalty,
-                "generator_penalty": breakdown.generator_penalty,
-                "waste_penalty": breakdown.waste_penalty,
+                "demand_reward": float(breakdown.demand_reward),
+                "renewable_reward": float(breakdown.renewable_reward),
+                "blackout_penalty": float(breakdown.blackout_penalty),
+                "generator_penalty": float(breakdown.generator_penalty),
+                "waste_penalty": float(breakdown.waste_penalty),
             },
-            "blackout": self._current_state.blackout,
-            "fossil_fuel_used": self._current_state.fossil_fuel_used,
-            "energy_wasted": self._current_state.energy_wasted,
-            "step": self._step_count,
+            "blackout": bool(self._current_state.blackout),
+            "fossil_fuel_used": float(self._current_state.fossil_fuel_used),
+            "energy_wasted": float(self._current_state.energy_wasted),
+            "step": int(self._step_count),
         }
 
         return self._to_obs(self._current_state), breakdown.total, done, info
@@ -87,27 +87,29 @@ class EnergyGridEnv:
     @staticmethod
     def _to_obs(gs: GridState) -> Dict[str, Any]:
         return {
-            "demand": gs.demand,
-            "solar_generation": gs.solar_generation,
-            "wind_generation": gs.wind_generation,
-            "battery_storage": gs.battery_storage,
-            "grid_capacity": gs.grid_capacity,
-            "transmission_load": gs.transmission_load,
-            "time_of_day": gs.time_of_day,
-            "region_demands": gs.region_demands,
+            "demand": float(gs.demand),
+            "solar_generation": float(gs.solar_generation),
+            "wind_generation": float(gs.wind_generation),
+            "battery_storage": float(gs.battery_storage),
+            "grid_capacity": float(gs.grid_capacity),
+            "transmission_load": float(gs.transmission_load),
+            "time_of_day": int(gs.time_of_day),
+            "region_demands": [float(d) for d in gs.region_demands],
         }
 
     @staticmethod
     def _build_simulator(task: str) -> GridSimulator:
         if task == "easy":
             from tasks.easy import build_regions
+            return GridSimulator(build_regions())
         elif task == "medium":
             from tasks.medium import build_regions
+            return GridSimulator(build_regions())
         elif task == "hard":
-            from tasks.hard import build_regions
+            from tasks.hard import HardGridSimulator
+            return HardGridSimulator()
         else:
             raise ValueError(f"Unknown task: {task}")
-        return GridSimulator(build_regions())
 
     def observation_space_shape(self) -> int:
         """Flat observation vector length (used by neural network input layer)."""

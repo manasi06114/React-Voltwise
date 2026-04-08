@@ -43,3 +43,10 @@ build/
 # Vite
 dist/
 .vite/
+
+# Environment secrets
+.env
+.env.*
+
+# Stackdumps
+*.stackdump
