@@ -30,7 +30,7 @@ COPY energy-grid-env/ ./energy-grid-env/
 # Copy and build frontend
 COPY frontend/package.json frontend/package-lock.json ./frontend/
 WORKDIR /home/user/app/frontend
-RUN npm ci --production=false
+RUN npm install
 
 COPY frontend/ ./
 RUN npm run build
